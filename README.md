@@ -22,7 +22,7 @@
 + 리스트 삭제 기능
 + 영문/중문 등 앱언어변환 기능
 
-## 5. API
+## 5. 소스 참조
 1. 국가 선택 : https://github.com/midorikocak/currency-picker-android#currency-picker-for-android
 2. 캘린더 : https://github.com/prolificinteractive/material-calendarview
 
