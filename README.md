@@ -26,5 +26,12 @@
 1. 국가 선택 : https://github.com/midorikocak/currency-picker-android#currency-picker-for-android
 2. 캘린더 : https://github.com/prolificinteractive/material-calendarview
 
-## 6. 기타
+## 6. 이미지
+![test1](https://user-images.githubusercontent.com/67582764/115197540-ad65f680-a123-11eb-977b-d8813f0b83b0.png)
+![test2](https://user-images.githubusercontent.com/67582764/115197548-ae972380-a123-11eb-9cad-ffb32137aa25.png)
+![test3](https://user-images.githubusercontent.com/67582764/115197550-af2fba00-a123-11eb-952d-e06c30ca2426.png)
+![test4](https://user-images.githubusercontent.com/67582764/115197551-afc85080-a123-11eb-8d1a-4f02e86a47ba.png)
+![test5](https://user-images.githubusercontent.com/67582764/115197555-b060e700-a123-11eb-9706-95e42b17c402.png)
+
+## 7. 기타
 - 테스트용 adMob
