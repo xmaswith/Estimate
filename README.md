@@ -3,7 +3,7 @@
 ## 1. 여행견적계산기란?
 * 여행 계획시 지출비용을 미리 손쉽게 계산할 수 있는 계산기 입니다. 
 
-
+   
 
 
 ## 2. 목적
@@ -12,7 +12,7 @@
 ### 2.2. 자유 여행객 이용
 * 여행 준비 금액을 미리 예상할 수 있습니다.
 
-
+   
 
 
 ## 3. 기능
@@ -24,7 +24,7 @@
 + 실시간 환율 확인
 
 
-
+   
 
 ## 4. 추가 예정
 + 수정 및 저장 기능
@@ -32,13 +32,13 @@
 + 영문/중문 등 앱언어변환 기능
 
 
-
+   
 
 ## 5. 소스 참조
 1. 국가 선택 : https://github.com/midorikocak/currency-picker-android#currency-picker-for-android
 2. 캘린더 : https://github.com/prolificinteractive/material-calendarview
 
-
+   
 
 
 ## 6. 이미지
@@ -48,7 +48,7 @@
 <img src="https://user-images.githubusercontent.com/67582764/115197551-afc85080-a123-11eb-8d1a-4f02e86a47ba.png" width="18%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img>
 <img src="https://user-images.githubusercontent.com/67582764/115197555-b060e700-a123-11eb-9706-95e42b17c402.png" width="18%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img><br/>
 
-
+   
 
 
 ## 7. 기타
