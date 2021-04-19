@@ -27,11 +27,11 @@
 2. 캘린더 : https://github.com/prolificinteractive/material-calendarview
 
 ## 6. 이미지
-<img src="https://user-images.githubusercontent.com/67582764/115197540-ad65f680-a123-11eb-977b-d8813f0b83b0.png" width="20%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img>
-<img src="https://user-images.githubusercontent.com/67582764/115197548-ae972380-a123-11eb-9cad-ffb32137aa25.png" width="20%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img>
-<img src="https://user-images.githubusercontent.com/67582764/115197550-af2fba00-a123-11eb-952d-e06c30ca2426.png" width="20%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img>
-<img src="https://user-images.githubusercontent.com/67582764/115197551-afc85080-a123-11eb-8d1a-4f02e86a47ba.png" width="20%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img>
-<img src="https://user-images.githubusercontent.com/67582764/115197555-b060e700-a123-11eb-9706-95e42b17c402.png" width="20%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img><br/>
+<img src="https://user-images.githubusercontent.com/67582764/115197540-ad65f680-a123-11eb-977b-d8813f0b83b0.png" width="18%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img>
+<img src="https://user-images.githubusercontent.com/67582764/115197548-ae972380-a123-11eb-9cad-ffb32137aa25.png" width="18%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img>
+<img src="https://user-images.githubusercontent.com/67582764/115197550-af2fba00-a123-11eb-952d-e06c30ca2426.png" width="18%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img>
+<img src="https://user-images.githubusercontent.com/67582764/115197551-afc85080-a123-11eb-8d1a-4f02e86a47ba.png" width="18%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img>
+<img src="https://user-images.githubusercontent.com/67582764/115197555-b060e700-a123-11eb-9706-95e42b17c402.png" width="18%" height="30%" title="px(픽셀) 크기 설정" alt="RubberDuck"></img><br/>
 
 ## 7. 기타
 - 테스트용 adMob
