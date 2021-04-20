@@ -36,8 +36,6 @@ public class SavedEstimateActivity extends AppCompatActivity {
             title = intent.getString("title");
             time = intent.getLong("time");
 
-            title_tv.setText(title);
-
             SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
             editor.putString("saveId", saveId);
             editor.putLong("time", time);

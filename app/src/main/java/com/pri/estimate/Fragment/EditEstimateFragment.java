@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +29,10 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -56,6 +59,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class EditEstimateFragment extends Fragment {
 
@@ -75,13 +79,13 @@ public class EditEstimateFragment extends Fragment {
     public RelativeLayout hotel_bar, air_bar, transport_bar, food_bar, ticket_bar,
             guide_bar, driver_bar;
 
-    Button saveAs_btn, save_btn;
+    Button save_btn;
 
     public EditText person_et, foc_et, guide_et, discount_et;
     public TextView date_tv, hotel_price_tv, air_price_tv, bus_price_tv, food_price_tv, ticket_price_tv,
-            guide_price_tv, driver_price_tv, symbol_tv, total_tv, title_tv, exchangeTotal_tv, symbolGoal_tv;
+            guide_price_tv, driver_price_tv, symbol_tv, total_tv, exchangeTotal_tv, symbolGoal_tv;
 
-    public int personVal=0, focVal=0, guideVal=0, discount=0;
+    public int person=0, foc=0, guide=0, discount=0;
 
     int hotelPrice;
     int airPrice;
@@ -99,7 +103,6 @@ public class EditEstimateFragment extends Fragment {
     private ProgressDialog progressDialog;
 
     String saveId, selectedDate, tempSaveId;
-    String savedTitle;
     long savedTime;
     Calendar calendar;
 
@@ -118,12 +121,10 @@ public class EditEstimateFragment extends Fragment {
         SharedPreferences prefs = getContext().getSharedPreferences("PREFS", Context.MODE_PRIVATE);
         saveId = prefs.getString("saveId", "none");
         savedTime = prefs.getLong("time", 0);
-        savedTitle = prefs.getString("title", "none");
-
-        tempSaveId = saveId;
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference().child("estimate").child(firebaseUser.getUid());
+        tempSaveId = reference.push().getKey();
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("Please wait");
@@ -162,15 +163,17 @@ public class EditEstimateFragment extends Fragment {
         driver_price_tv = view.findViewById(R.id.driver_price_tv);
         symbol_tv = view.findViewById(R.id.symbol_tv);
         total_tv = view.findViewById(R.id.total_tv);
-        title_tv = view.findViewById(R.id.title_tv);
+        symbolGoal_tv = view.findViewById(R.id.symbolGoal_tv);
 
-        saveAs_btn = view.findViewById(R.id.saveAs_btn);
         save_btn = view.findViewById(R.id.save_btn);
 
         calendar = Calendar.getInstance();
 
-        setData();
+        DatabaseReference saveRef = reference.child(saveId);
+        DatabaseReference tempRef = reference.child(tempSaveId);
 
+        setData();
+        copyData(tempRef, saveRef);
 
         dateOpenSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -186,7 +189,7 @@ public class EditEstimateFragment extends Fragment {
             }
         });
 
-        person_et.addTextChangedListener(new TextWatcher() {
+        TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -199,52 +202,14 @@ public class EditEstimateFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length() >= 1){
-                    personVal = Integer.parseInt(s.toString());
-                    edittextToFirebase(personVal, focVal, guideVal);
-                }
+                edittextToFirebase();
+                getTotal();
             }
-        });
+        };
 
-        foc_et.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(s.length() >= 1){
-                    focVal = Integer.parseInt(s.toString());
-                    edittextToFirebase(personVal, focVal, guideVal);
-                }
-            }
-        });
-
-        guide_et.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(s.length() >= 1){
-                    guideVal = Integer.parseInt(s.toString());
-                    edittextToFirebase(personVal, focVal, guideVal);
-                }
-            }
-        });
+        person_et.addTextChangedListener(textWatcher);
+        foc_et.addTextChangedListener(textWatcher);
+        guide_et.addTextChangedListener(textWatcher);
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -252,49 +217,27 @@ public class EditEstimateFragment extends Fragment {
                 reference.child(saveId).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        boolean input = false;
                         switch (v.getId()){
                             case R.id.hotel_bar:
-                                if(snapshot.hasChild("HotelPrice")){
-                                    input = true;
-                                }
-                                putIntent(HotelActivity.class, input, REQUEST_HOTEL, "HotelPrice");
+                                putIntent(HotelActivity.class, REQUEST_HOTEL, "HotelPrice");
                                 break;
                             case R.id.air_bar:
-                                if(snapshot.hasChild("AirPrice")){
-                                    input = true;
-                                }
-                                putIntent(AirActivity.class, input, REQUEST_AIR, "AirPrice");
+                                putIntent(AirActivity.class, REQUEST_AIR, "AirPrice");
                                 break;
                             case R.id.transport_bar:
-                                if(snapshot.hasChild("BusPrice")){
-                                    input = true;
-                                }
-                                putIntent(BusActivity.class, input, REQUEST_BUS, "BusPrice");
+                                putIntent(BusActivity.class, REQUEST_BUS, "BusPrice");
                                 break;
                             case R.id.food_bar:
-                                if(snapshot.hasChild("FoodPrice")){
-                                    input = true;
-                                }
-                                putIntent(FoodActivity.class, input, REQUEST_FOOD, "FoodPrice");
+                                putIntent(FoodActivity.class, REQUEST_FOOD, "FoodPrice");
                                 break;
                             case R.id.ticket_bar:
-                                if(snapshot.hasChild("TicketPrice")){
-                                    input = true;
-                                }
-                                putIntent(TicketActivity.class, input, REQUEST_TICKET, "TicketPrice");
+                                putIntent(TicketActivity.class, REQUEST_TICKET, "TicketPrice");
                                 break;
                             case R.id.guide_bar:
-                                if(snapshot.hasChild("GuidePrice")){
-                                    input = true;
-                                }
-                                putIntent(GuideActivity.class, input, REQUEST_GUIDE, "GuidePrice");
+                                putIntent(GuideActivity.class, REQUEST_GUIDE, "GuidePrice");
                                 break;
                             case R.id.driver_bar:
-                                if(snapshot.hasChild("DriverPrice")){
-                                    input = true;
-                                }
-                                putIntent(DriverActivity.class, input, REQUEST_DRIVER, "DriverPrice");
+                                putIntent(DriverActivity.class, REQUEST_DRIVER, "DriverPrice");
                                 break;
                         }
                     }
@@ -325,30 +268,8 @@ public class EditEstimateFragment extends Fragment {
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                copyData(saveRef, tempRef);
                                 saveData();
-                            }
-                        })
-                        .setNeutralButton("취소", null)
-                        .create().show();
-            }
-        });
-
-        saveAs_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("제목을 입력하십시오")
-                        .setView(title_et)
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String title;
-                                if(title_et.getText().toString().equals("")){
-                                    title = "sorry";
-                                } else {
-                                    title = title_et.getText().toString();
-                                }
-                                newSaveData(title);
                             }
                         })
                         .setNeutralButton("취소", null)
@@ -369,8 +290,9 @@ public class EditEstimateFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(discount_et.getText().length()>0){
+                if(s.length()>0){
                     discount = Integer.parseInt(discount_et.getText().toString());
+                    getTotal();
                 }
             }
         });
@@ -418,6 +340,7 @@ public class EditEstimateFragment extends Fragment {
                     driverPrice = Integer.parseInt(data.getExtras().getString("totalPrice"));
                     String driverPriceDecimal = df.format(driverPrice);
                     driver_price_tv.setText(driverPriceDecimal);
+                    break;
                 case REQUEST_DATE:
                     selectedDate = data.getStringExtra("selectedDate");
                     try{
@@ -429,27 +352,35 @@ public class EditEstimateFragment extends Fragment {
                     }
                     date_tv.setText(selectedDate);
                     date_tv.setVisibility(View.VISIBLE);
+                    break;
             }
             getTotal();
         }
 
     }
 
-    public void putIntent(Class activityName, boolean input, int request, String adapterName){
+    public void putIntent(Class activityName, int request, String adapterName){
         Intent intent = new Intent(getContext(), activityName);
-        intent.putExtra("saveId", saveId);
-        intent.putExtra("input", input);
+        intent.putExtra("saveId", tempSaveId);
         intent.putExtra("adapterName", adapterName);
         startActivityForResult(intent, request);
     }
 
-    public void edittextToFirebase(int personVal, int focVal, int guideVal) throws NumberFormatException{
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("person", personVal);
-        hashMap.put("foc", focVal);
-        hashMap.put("guide", guideVal);
+    public void edittextToFirebase() throws NumberFormatException{
+        Editable personVal = person_et.getText();
+        Editable focVal = foc_et.getText();
+        Editable guideVal = guide_et.getText();
 
-        reference.child(saveId).child("SetNumber").updateChildren(hashMap);
+        if(personVal.length()>0 && focVal.length()>0 && guideVal.length()>0){
+            person = Integer.parseInt(personVal.toString());
+            foc = Integer.parseInt(focVal.toString());
+            guide = Integer.parseInt(guideVal.toString());
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("person", person);
+            hashMap.put("foc", foc);
+            hashMap.put("guide", guide);
+            reference.child(saveId).child("SetNumber").updateChildren(hashMap);
+        }
     }
 
     private void setData(){
@@ -488,23 +419,22 @@ public class EditEstimateFragment extends Fragment {
     }
 
     private void getTotal(){
-        totalPrice = (hotelPrice + airPrice + busPrice + foodPrice + ticketPrice + guidePrice + driverPrice - discount) /
-                Integer.parseInt(person_et.getText().toString());
-        String totalPriceDecimal = df.format(totalPrice);
+        totalPrice = (hotelPrice + busPrice + foodPrice + ticketPrice + guidePrice + driverPrice) /
+                Integer.parseInt(person_et.getText().toString()) - discount;
+        int airPricePerPerson = airPrice / Integer.parseInt(person_et.getText().toString());
+        String totalPriceDecimal = df.format(totalPrice + (int)(airPricePerPerson/currencyRates));
         total_tv.setText(totalPriceDecimal);
-        String exchangeTotalDecimal = df.format((int)(totalPrice * currencyRates));
+        String exchangeTotalDecimal = df.format((int)(totalPrice * currencyRates) + airPricePerPerson);
         exchangeTotal_tv.setText(exchangeTotalDecimal);
     }
 
     private void saveData(){
-
         try{
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lists").child(firebaseUser.getUid())
                     .child(saveId);
 
             HashMap<String, Object> hashMap2 = new HashMap<>();
             hashMap2.put("date", date_tv.getText().toString());
-            hashMap2.put("time", savedTime);
             hashMap2.put("person", person_et.getText().toString());
             hashMap2.put("foc", foc_et.getText().toString());
             hashMap2.put("guide", guide_et.getText().toString());
@@ -516,14 +446,16 @@ public class EditEstimateFragment extends Fragment {
             hashMap2.put("guidePrice", guide_price_tv.getText().toString());
             hashMap2.put("driverPrice", driver_price_tv.getText().toString());
             hashMap2.put("totalPrice", total_tv.getText().toString());
+            hashMap2.put("exchangeTotalPrice", exchangeTotal_tv.getText().toString());
             hashMap2.put("saveId", saveId);
-            hashMap2.put("title", savedTitle);
-            hashMap2.put("symbol", symbol_tv.getText().toString());
+            hashMap2.put("discount", discount_et.getText().toString());
 
             reference.updateChildren(hashMap2)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            FirebaseDatabase.getInstance().getReference("estimate").child(firebaseUser.getUid())
+                                    .child(saveId).child("saved").setValue(true);
                             Toast.makeText(getContext(), "저장되었습니다.", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getContext(), MainActivity.class)
                             .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
@@ -540,49 +472,43 @@ public class EditEstimateFragment extends Fragment {
         }
     }
 
-    private void newSaveData(String title){
-        long time = System.currentTimeMillis();
+    private void copyData(DatabaseReference toRef, DatabaseReference fromRef){
 
-        try{
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lists").child(firebaseUser.getUid())
-                    .push();
-
-            HashMap<String, Object> hashMap2 = new HashMap<>();
-            hashMap2.put("date", date_tv.getText().toString());
-            hashMap2.put("time", time);
-            hashMap2.put("person", person_et.getText().toString());
-            hashMap2.put("foc", foc_et.getText().toString());
-            hashMap2.put("guide", guide_et.getText().toString());
-            hashMap2.put("hotelPrice", hotel_price_tv.getText().toString());
-            hashMap2.put("airPrice", air_price_tv.getText().toString());
-            hashMap2.put("busPrice", bus_price_tv.getText().toString());
-            hashMap2.put("foodPrice", food_price_tv.getText().toString());
-            hashMap2.put("ticketPrice", ticket_price_tv.getText().toString());
-            hashMap2.put("guidePrice", guide_price_tv.getText().toString());
-            hashMap2.put("driverPrice", driver_price_tv.getText().toString());
-            hashMap2.put("totalPrice", total_tv.getText().toString());
-            hashMap2.put("saveId", saveId);
-            hashMap2.put("title", title);
-            hashMap2.put("symbol", symbol_tv.getText().toString());
-
-            reference.updateChildren(hashMap2)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(getContext(), "저장되었습니다.", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getContext(), MainActivity.class)
-                                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        fromRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    toRef.updateChildren((Map<String, Object>) dataSnapshot.getValue())
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        Log.e("copy:", "copied");
+                                    }
+                                }
+                            });
                 }
-            });
-        }catch (Exception e){
-            Toast.makeText(getContext(), "모두 입력해 주십시오!", Toast.LENGTH_SHORT).show();
-        }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        fromRef.removeValue();
     }
 
+    private void noSave(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("estimate").child(firebaseUser.getUid())
+                .child(tempSaveId);
+        reference.removeValue();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        noSave();
+    }
 }

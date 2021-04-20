@@ -145,7 +145,6 @@ public class BusActivity extends AppCompatActivity {
     }
 
     public void inputData(){
-
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("estimate").child(firebaseUser.getUid())
                 .child(saveId).child(adapterName);
 

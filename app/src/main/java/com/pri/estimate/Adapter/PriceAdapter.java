@@ -19,7 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.pri.estimate.Fragment.EstimateFragment;
 import com.pri.estimate.Model.InputModel;
 import com.pri.estimate.Model.SaveModel;
 import com.pri.estimate.Model.SetNumber;
@@ -38,9 +37,6 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolder>{
 
     private FirebaseUser firebaseUser;
     private FirebaseAuth auth;
-
-    EstimateFragment estimateFragment = new EstimateFragment();
-
 
     public PriceAdapter(Context mContext, List<InputModel> mInputModels, String saveId, String adapterName, TextChanged textChanged) {
         this.mContext = mContext;
@@ -87,12 +83,16 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolder>{
 
         holder.price_et.addTextChangedListener(textWatcher);
         holder.count_et.addTextChangedListener(textWatcher);
+
+
     }
 
     @Override
     public int getItemCount() {
         return mInputModels.size();
     }
+
+
 
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -223,4 +223,6 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolder>{
         });
 
     }
+
+
 }

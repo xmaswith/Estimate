@@ -2,6 +2,7 @@ package com.pri.estimate.Fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,7 +43,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.pri.estimate.AirActivity;
 import com.pri.estimate.BusActivity;
-import com.pri.estimate.DatabaseHelper;
 import com.pri.estimate.DriverActivity;
 import com.pri.estimate.FoodActivity;
 import com.pri.estimate.GuideActivity;
@@ -71,6 +71,8 @@ public class EstimateFragment extends Fragment {
     public static final int REQUEST_DRIVER = 700;
     public static final int REQUEST_DATE = 800;
 
+    public static final int MAX_LIST = 50;
+
     private AdView mAdView;
 
     public SwitchCompat dateOpenSwitch;
@@ -98,9 +100,6 @@ public class EstimateFragment extends Fragment {
     long time = 0;
     double currencyRates = 0.0;
 
-    boolean isCheckedDate = false;
-
-    public DatabaseHelper db;
     private FirebaseUser firebaseUser;
     private DatabaseReference reference;
     private ProgressDialog progressDialog;
@@ -109,6 +108,14 @@ public class EstimateFragment extends Fragment {
     Calendar calendar;
 
     private DecimalFormat df;
+
+    Context context;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        this.context = context;
+        super.onAttach(context);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -124,15 +131,12 @@ public class EstimateFragment extends Fragment {
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("Please wait");
         progressDialog.setCanceledOnTouchOutside(false);
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_estimate, container, false);
-        db = new DatabaseHelper(getContext());
 
         dateOpenSwitch = view.findViewById(R.id.dateOpenSwitch);
         scrollView = view.findViewById(R.id.scrollView);
@@ -188,11 +192,9 @@ public class EstimateFragment extends Fragment {
                     DialogFragment datePickerFragment = new DatePickerFragment();
                     datePickerFragment.setTargetFragment(EstimateFragment.this, REQUEST_DATE);
                     datePickerFragment.show(((FragmentActivity)getContext()).getSupportFragmentManager(), "datePicker");
-                    isCheckedDate = true;
                 } else {
                     date_tv.setVisibility(View.GONE);
                     date_tv.setText("none");
-                    isCheckedDate = false;
                 }
             }
         });
@@ -394,6 +396,7 @@ public class EstimateFragment extends Fragment {
     public void putIntent(Class activityName, int request, String adapterName){
         Intent intent = new Intent(getContext(), activityName);
         intent.putExtra("saveId", saveId);
+        intent.putExtra("edit", false);
         intent.putExtra("adapterName", adapterName);
         startActivityForResult(intent, request);
     }
@@ -456,8 +459,7 @@ public class EstimateFragment extends Fragment {
         time = System.currentTimeMillis();
 
         try{
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lists").child(firebaseUser.getUid())
-                    .push();
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lists").child(firebaseUser.getUid());
 
             HashMap<String, Object> hashMap2 = new HashMap<>();
 
@@ -482,23 +484,39 @@ public class EstimateFragment extends Fragment {
             hashMap2.put("discount", discount_et.getText().toString());
             hashMap2.put("currency", currencyRates);
 
-            reference.updateChildren(hashMap2)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            FirebaseDatabase.getInstance().getReference("estimate").child(firebaseUser.getUid())
-                                    .child(saveId).child("saved").setValue(true);
-                            Toast.makeText(getContext(), "저장되었습니다.", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getContext(), MainActivity.class)
-                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onFailure(@NonNull Exception e) {
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.getChildrenCount()<MAX_LIST){
+                        reference.child(saveId).updateChildren(hashMap2)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        FirebaseDatabase.getInstance().getReference("estimate").child(firebaseUser.getUid())
+                                                .child(saveId).child("saved").setValue(true);
+                                        Toast.makeText(context, "저장되었습니다.", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(getContext(), MainActivity.class)
+                                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
+                                Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(context, "최대 50개까지만 저장 가능합니다.", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
                 }
             });
+
         }catch (Exception e){
             Toast.makeText(getContext(), "모두 입력해 주십시오!", Toast.LENGTH_SHORT).show();
         }

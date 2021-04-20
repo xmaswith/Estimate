@@ -50,8 +50,7 @@ public class DriverActivity extends AppCompatActivity {
     private FirebaseAuth auth;
 
     double timeNow;
-    String saveId;
-    String adapterName;
+    String saveId, adapterName;
     int addCount;
 
     InputModel inputModel;
@@ -74,8 +73,8 @@ public class DriverActivity extends AppCompatActivity {
         inputModel = new InputModel();
 
         Intent intent = getIntent();
-        saveId = intent.getStringExtra("saveId");
         adapterName = intent.getStringExtra("adapterName");
+        saveId = intent.getStringExtra("saveId");
 
         Toolbar toolbar = findViewById(R.id.appBar);
         setSupportActionBar(toolbar);
@@ -145,7 +144,6 @@ public class DriverActivity extends AppCompatActivity {
     }
 
     public void inputData(){
-
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("estimate").child(firebaseUser.getUid())
                 .child(saveId).child(adapterName);
 

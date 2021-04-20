@@ -178,53 +178,11 @@
 
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/air_bar"
-                android:layout_below="@id/hotel_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/button_background">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_flight"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="40dp"
-                    android:text="AIR"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorAccent"/>
-
-                <TextView
-                    android:textColor="@color/colorAccent"
-                    android:id="@+id/air_price_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="35dp"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:text="0"/>
-
-
-                <ImageView
-                    android:layout_marginLeft="30dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_arrow_right"/>
-
-            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/transport_bar"
-                android:layout_below="@id/air_bar"
+                android:layout_below="@id/hotel_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
@@ -444,9 +402,53 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/air_bar"
+                android:layout_below="@id/driver_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_background">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_flight"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:text="AIR"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="@color/colorAccent"/>
+
+                <TextView
+                    android:textColor="#FF4081"
+                    android:id="@+id/air_price_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="35dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:text="0"/>
+
+
+                <ImageView
+                    android:layout_marginLeft="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_arrow_right"/>
+
+            </RelativeLayout>
+
             <LinearLayout
                 android:id="@+id/discount_rl"
-                android:layout_below="@id/driver_bar"
+                android:layout_below="@id/air_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -471,7 +473,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
-                        android:text="DISCOUNT"
+                        android:text="DISCOUNT(/person)"
                         android:textStyle="bold"
                         android:textSize="16sp"
                         android:textColor="@color/colorAccent"/>
@@ -496,6 +498,18 @@
 
                 </LinearLayout>
             </LinearLayout>
+
+            <com.google.android.gms.ads.AdView
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/discount_rl"
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/banner_ad_unit_id_for_test"/>
 
         </RelativeLayout>
 
@@ -583,18 +597,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/saveAs_btn"
-            android:background="@drawable/button_background"
-            android:backgroundTint="#40C4FF"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:layout_margin="5dp"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:text="다른 이름 저장" />
 
         <Button
             android:id="@+id/save_btn"

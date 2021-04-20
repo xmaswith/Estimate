@@ -24,11 +24,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.pri.estimate.DatabaseHelper;
 import com.pri.estimate.Model.EstimateModel;
 import com.pri.estimate.R;
 
-import java.text.DecimalFormat;
 import java.util.Calendar;
 
 public class SavedEstimateFragment extends Fragment {
@@ -41,30 +39,14 @@ public class SavedEstimateFragment extends Fragment {
 
     public EditText person_et, foc_et, guide_et, discount_et;
     public TextView date_tv, hotel_price_tv, air_price_tv, bus_price_tv, food_price_tv, ticket_price_tv,
-            guide_price_tv, driver_price_tv, symbol_tv, symbolGoal_tv, total_tv, exchangeTotal_tv, title_tv;
+            guide_price_tv, driver_price_tv, symbol_tv, symbolGoal_tv, total_tv, exchangeTotal_tv;
 
-    int hotelPrice;
-    int airPrice;
-    int busPrice;
-    int foodPrice;
-    int ticketPrice;
-    int guidePrice;
-    int driverPrice;
-    int totalPrice;
-    double currencyRates = 0.0;
-    private int discount;
-
-    public DatabaseHelper db;
     private FirebaseUser firebaseUser;
-    private DatabaseReference reference;
     private ProgressDialog progressDialog;
 
-    String saveId, selectedDate, tempSaveId;
-    String savedTitle;
+    String saveId;
     long savedTime;
     Calendar calendar;
-
-    private DecimalFormat df;
 
     public SavedEstimateFragment() {
     }
@@ -74,17 +56,11 @@ public class SavedEstimateFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        df = new DecimalFormat("###,###");
-
         SharedPreferences prefs = getContext().getSharedPreferences("PREFS", Context.MODE_PRIVATE);
         saveId = prefs.getString("saveId", "none");
         savedTime = prefs.getLong("time", 0);
-        savedTitle = prefs.getString("title", "none");
-
-        tempSaveId = saveId;
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference().child("estimate").child(firebaseUser.getUid());
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("Please wait");
@@ -95,7 +71,6 @@ public class SavedEstimateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_saved_estimate, container, false);
-        db = new DatabaseHelper(getContext());
 
         dateOpenSwitch = view.findViewById(R.id.dateOpenSwitch);
         scrollView = view.findViewById(R.id.scrollView);
@@ -122,7 +97,6 @@ public class SavedEstimateFragment extends Fragment {
         guide_price_tv = view.findViewById(R.id.guide_price_tv);
         driver_price_tv = view.findViewById(R.id.driver_price_tv);
         symbol_tv = view.findViewById(R.id.symbol_tv);
-        title_tv = view.findViewById(R.id.title_tv);
         symbolGoal_tv = view.findViewById(R.id.symbolGoal_tv);
         total_tv = view.findViewById(R.id.total_tv);
         exchangeTotal_tv = view.findViewById(R.id.exchangeTotal_tv);
@@ -130,7 +104,6 @@ public class SavedEstimateFragment extends Fragment {
         calendar = Calendar.getInstance();
 
         setData();
-//        getTotal();
 
         dateOpenSwitch.setEnabled(false);
         person_et.setEnabled(false);
@@ -160,7 +133,7 @@ public class SavedEstimateFragment extends Fragment {
                         bus_price_tv.setText(estimateModel.getBusPrice());
                         food_price_tv.setText(estimateModel.getFoodPrice());
                         ticket_price_tv.setText(estimateModel.getTicketPrice());
-                        guide_price_tv.setText(estimateModel.getGuide());
+                        guide_price_tv.setText(estimateModel.getGuidePrice());
                         driver_price_tv.setText(estimateModel.getDriverPrice());
                         total_tv.setText(estimateModel.getTotalPrice());
                         exchangeTotal_tv.setText(estimateModel.getExchangeTotalPrice());
@@ -176,16 +149,5 @@ public class SavedEstimateFragment extends Fragment {
             }
         });
     }
-
-    /*private void getTotal(){
-        discount = Integer.parseInt(discount_et.getText().toString());
-        totalPrice = (hotelPrice + busPrice + foodPrice + ticketPrice + guidePrice + driverPrice) /
-                Integer.parseInt(person_et.getText().toString()) - discount;
-        int airPricePerPerson = airPrice / Integer.parseInt(person_et.getText().toString());
-        String totalPriceDecimal = df.format(totalPrice + (int)(airPricePerPerson/currencyRates));
-        total_tv.setText(totalPriceDecimal);
-        String exchangeTotalDecimal = df.format((int)(totalPrice * currencyRates) + airPricePerPerson);
-        exchangeTotal_tv.setText(exchangeTotalDecimal);
-    }*/
 
 }

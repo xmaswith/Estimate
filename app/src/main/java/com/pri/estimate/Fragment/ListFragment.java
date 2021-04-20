@@ -124,7 +124,7 @@ public class ListFragment extends Fragment {
 
     private void readEstimates(){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Lists").child(firebaseUser.getUid());
-        reference.addValueEventListener(new ValueEventListener() {
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(search_bar.getText().toString().equals("")){
