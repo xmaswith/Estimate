@@ -509,7 +509,7 @@
                         android:id="@+id/discount_et"
                         android:textColor="#448AFF"
                         android:textSize="16sp"
-                        android:hint="0"
+                        android:text="0"
                         android:textAlignment="viewEnd"
                         android:inputType="number"
                         android:selectAllOnFocus="true"

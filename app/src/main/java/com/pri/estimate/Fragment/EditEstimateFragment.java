@@ -59,7 +59,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 public class EditEstimateFragment extends Fragment {
 
@@ -101,6 +100,7 @@ public class EditEstimateFragment extends Fragment {
     private FirebaseUser firebaseUser;
     private DatabaseReference reference;
     private ProgressDialog progressDialog;
+    boolean isSetInitialText;
 
     String saveId, selectedDate, tempSaveId;
     long savedTime;
@@ -164,6 +164,7 @@ public class EditEstimateFragment extends Fragment {
         symbol_tv = view.findViewById(R.id.symbol_tv);
         total_tv = view.findViewById(R.id.total_tv);
         symbolGoal_tv = view.findViewById(R.id.symbolGoal_tv);
+        exchangeTotal_tv = view.findViewById(R.id.exchangeTotal_tv);
 
         save_btn = view.findViewById(R.id.save_btn);
 
@@ -202,10 +203,14 @@ public class EditEstimateFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                edittextToFirebase();
-                getTotal();
+                if(s!=null){
+                    edittextToFirebase();
+                    getTotal();
+                }
+
             }
         };
+
 
         person_et.addTextChangedListener(textWatcher);
         foc_et.addTextChangedListener(textWatcher);
@@ -269,6 +274,7 @@ public class EditEstimateFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 copyData(saveRef, tempRef);
+                                tempRef.removeValue();
                                 saveData();
                             }
                         })
@@ -391,6 +397,19 @@ public class EditEstimateFragment extends Fragment {
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                     EstimateModel estimateModel = dataSnapshot.getValue(EstimateModel.class);
                     if(estimateModel!=null){
+                        hotelPrice = toInteger(estimateModel.getHotelPrice());
+                        busPrice = toInteger(estimateModel.getBusPrice());
+                        foodPrice = toInteger(estimateModel.getFoodPrice());
+                        ticketPrice = toInteger(estimateModel.getTicketPrice());
+                        guidePrice = toInteger(estimateModel.getGuidePrice());
+                        driverPrice = toInteger(estimateModel.getDriverPrice());
+                        airPrice = toInteger(estimateModel.getAirPrice());
+                        person = toInteger(estimateModel.getPerson());
+                        foc = toInteger(estimateModel.getFoc());
+                        guide = toInteger(estimateModel.getGuide());
+                        discount = Integer.parseInt(estimateModel.getDiscount());
+
+                        isSetInitialText = true;
                         person_et.setText(estimateModel.getPerson());
                         foc_et.setText(estimateModel.getFoc());
                         guide_et.setText(estimateModel.getGuide());
@@ -419,13 +438,16 @@ public class EditEstimateFragment extends Fragment {
     }
 
     private void getTotal(){
-        totalPrice = (hotelPrice + busPrice + foodPrice + ticketPrice + guidePrice + driverPrice) /
-                Integer.parseInt(person_et.getText().toString()) - discount;
-        int airPricePerPerson = airPrice / Integer.parseInt(person_et.getText().toString());
-        String totalPriceDecimal = df.format(totalPrice + (int)(airPricePerPerson/currencyRates));
-        total_tv.setText(totalPriceDecimal);
-        String exchangeTotalDecimal = df.format((int)(totalPrice * currencyRates) + airPricePerPerson);
-        exchangeTotal_tv.setText(exchangeTotalDecimal);
+        if(!person_et.getText().equals("")){
+            totalPrice = (hotelPrice + busPrice + foodPrice + ticketPrice + guidePrice + driverPrice) /
+                    person - discount;
+            int airPricePerPerson = airPrice / person;
+            String totalPriceDecimal = df.format(totalPrice + (int)(airPricePerPerson/currencyRates));
+            total_tv.setText(totalPriceDecimal);
+            String exchangeTotalDecimal = df.format((int)(totalPrice * currencyRates) + airPricePerPerson);
+            exchangeTotal_tv.setText(exchangeTotalDecimal);
+        }
+
     }
 
     private void saveData(){
@@ -434,6 +456,7 @@ public class EditEstimateFragment extends Fragment {
                     .child(saveId);
 
             HashMap<String, Object> hashMap2 = new HashMap<>();
+
             hashMap2.put("date", date_tv.getText().toString());
             hashMap2.put("person", person_et.getText().toString());
             hashMap2.put("foc", foc_et.getText().toString());
@@ -477,18 +500,15 @@ public class EditEstimateFragment extends Fragment {
         fromRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    toRef.updateChildren((Map<String, Object>) dataSnapshot.getValue())
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        Log.e("copy:", "copied");
-                                    }
+                toRef.setValue(snapshot.getValue())
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Log.e("copy:", "copied");
                                 }
-                            });
-                }
-
+                            }
+                        });
             }
 
             @Override
@@ -496,8 +516,6 @@ public class EditEstimateFragment extends Fragment {
 
             }
         });
-
-        fromRef.removeValue();
     }
 
     private void noSave(){
@@ -510,5 +528,13 @@ public class EditEstimateFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         noSave();
+    }
+
+    public int toInteger(String data){
+        int result = 0;
+        if(data!=null){
+            result = Integer.parseInt(data.replaceAll(",",""));
+        }
+        return result;
     }
 }
