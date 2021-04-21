@@ -1,7 +1,6 @@
 package com.pri.estimate.Fragment;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -99,8 +98,6 @@ public class EditEstimateFragment extends Fragment {
     public DatabaseHelper db;
     private FirebaseUser firebaseUser;
     private DatabaseReference reference;
-    private ProgressDialog progressDialog;
-    boolean isSetInitialText;
 
     String saveId, selectedDate, tempSaveId;
     long savedTime;
@@ -126,9 +123,6 @@ public class EditEstimateFragment extends Fragment {
         reference = FirebaseDatabase.getInstance().getReference().child("estimate").child(firebaseUser.getUid());
         tempSaveId = reference.push().getKey();
 
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setTitle("Please wait");
-        progressDialog.setCanceledOnTouchOutside(false);
     }
 
     @Override
@@ -274,7 +268,6 @@ public class EditEstimateFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 copyData(saveRef, tempRef);
-                                tempRef.removeValue();
                                 saveData();
                             }
                         })
@@ -409,7 +402,6 @@ public class EditEstimateFragment extends Fragment {
                         guide = toInteger(estimateModel.getGuide());
                         discount = Integer.parseInt(estimateModel.getDiscount());
 
-                        isSetInitialText = true;
                         person_et.setText(estimateModel.getPerson());
                         foc_et.setText(estimateModel.getFoc());
                         guide_et.setText(estimateModel.getGuide());
@@ -424,6 +416,7 @@ public class EditEstimateFragment extends Fragment {
                         guide_price_tv.setText(estimateModel.getGuidePrice());
                         driver_price_tv.setText(estimateModel.getDriverPrice());
                         total_tv.setText(estimateModel.getTotalPrice());
+                        discount_et.setText(estimateModel.getDiscount());
                     }
                 }
             }
@@ -477,8 +470,6 @@ public class EditEstimateFragment extends Fragment {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            FirebaseDatabase.getInstance().getReference("estimate").child(firebaseUser.getUid())
-                                    .child(saveId).child("saved").setValue(true);
                             Toast.makeText(getContext(), "저장되었습니다.", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getContext(), MainActivity.class)
                             .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
@@ -486,7 +477,6 @@ public class EditEstimateFragment extends Fragment {
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    progressDialog.dismiss();
                     Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });

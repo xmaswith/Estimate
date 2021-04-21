@@ -1,7 +1,6 @@
 package com.pri.estimate.Fragment;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -102,7 +101,6 @@ public class EstimateFragment extends Fragment {
 
     private FirebaseUser firebaseUser;
     private DatabaseReference reference;
-    private ProgressDialog progressDialog;
 
     String saveId, selectedDate, title="noTitle";
     Calendar calendar;
@@ -128,9 +126,6 @@ public class EstimateFragment extends Fragment {
         reference = FirebaseDatabase.getInstance().getReference().child("estimate").child(firebaseUser.getUid());
         saveId = reference.push().getKey();
 
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setTitle("Please wait");
-        progressDialog.setCanceledOnTouchOutside(false);
     }
 
     @Override
@@ -501,7 +496,6 @@ public class EstimateFragment extends Fragment {
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                progressDialog.dismiss();
                                 Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
