@@ -61,7 +61,7 @@
         versionCode 1 /
         versionName "1.0"
 * 개발인원 : 1인
-* 소요기간 : 약 2주        
+* 소요기간 : 약 3주        
 
 ## 8. 기타
 - 테스트용 adMob
