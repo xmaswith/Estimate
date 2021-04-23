@@ -1,4 +1,4 @@
-# Estimate (여행 견적 계산기)
+# Travel How Much? (여행 견적 계산기)
 
 ## 1. 여행견적계산기란?
 * 여행 계획시 지출비용을 미리 손쉽게 계산할 수 있는 계산기 입니다. 
@@ -51,6 +51,17 @@
 
    
 
+## 7. 환경
+* 운영체제 : Windows 10 Pro
+* 개발도구 : Android Studio
+* 개발언어 : java (Android)
+* 데이터베이스 : Firebase Realtime Database
+* 버전 : minSdkVersion 21 /
+        targetSdkVersion 30 /
+        versionCode 1 /
+        versionName "1.0"
+* 개발인원 : 1인
+* 소요기간 : 약 3주        
 
-## 7. 기타
+## 8. 기타
 - 테스트용 adMob
