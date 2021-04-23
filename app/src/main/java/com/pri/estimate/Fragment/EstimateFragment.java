@@ -126,6 +126,7 @@ public class EstimateFragment extends Fragment {
         reference = FirebaseDatabase.getInstance().getReference().child("estimate").child(firebaseUser.getUid());
         saveId = reference.push().getKey();
 
+
     }
 
     @Override
@@ -489,7 +490,7 @@ public class EstimateFragment extends Fragment {
                                     public void onSuccess(Void aVoid) {
                                         FirebaseDatabase.getInstance().getReference("estimate").child(firebaseUser.getUid())
                                                 .child(saveId).child("saved").setValue(true);
-                                        Toast.makeText(context, "저장되었습니다.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, context.getString(R.string.save_tst), Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(getContext(), MainActivity.class)
                                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                     }
@@ -500,7 +501,7 @@ public class EstimateFragment extends Fragment {
                             }
                         });
                     } else {
-                        Toast.makeText(context, "최대 50개까지만 저장 가능합니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, context.getString(R.string.saveLimit_tst), Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -512,7 +513,7 @@ public class EstimateFragment extends Fragment {
             });
 
         }catch (Exception e){
-            Toast.makeText(getContext(), "모두 입력해 주십시오!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), context.getString(R.string.saveAlert_tst), Toast.LENGTH_SHORT).show();
         }
     }
 

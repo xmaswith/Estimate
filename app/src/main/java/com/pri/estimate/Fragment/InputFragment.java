@@ -1,6 +1,8 @@
 package com.pri.estimate.Fragment;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mynameismidori.currencypicker.CurrencyPicker;
 import com.mynameismidori.currencypicker.CurrencyPickerListener;
+import com.pri.estimate.LocaleHelper;
 import com.pri.estimate.Model.SaveModel;
 import com.pri.estimate.R;
 
@@ -34,8 +37,9 @@ import java.util.HashMap;
 
 public class InputFragment extends Fragment {
 
+
     EditText person_et, foc_et, guide_et, hotelCount_et, dayCount_et, currency_et;
-    Button symbol_btn, symbolGoal_btn, save_btn, currencySearch_btn;
+    Button symbol_btn, symbolGoal_btn, save_btn, currencySearch_btn, language_btn;
 
     private FirebaseUser firebaseUser;
     private FirebaseAuth auth;
@@ -43,6 +47,10 @@ public class InputFragment extends Fragment {
 
     public String currencySymbol, currencyGoalSymbol;
     public String countryCode, countryGoalCode;
+
+    private String languageKo = "ko";
+    private String languageEn = "en";
+    private String languageTw = "tw";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +68,8 @@ public class InputFragment extends Fragment {
         save_btn = view.findViewById(R.id.save_btn);
         symbolGoal_btn = view.findViewById(R.id.symbolGoal_btn);
         currencySearch_btn = view.findViewById(R.id.currencySearch_btn);
+        language_btn = view.findViewById(R.id.language_btn);
+
 
         auth = FirebaseAuth.getInstance();
         firebaseUser = auth.getCurrentUser();
@@ -115,9 +125,36 @@ public class InputFragment extends Fragment {
                             countryCode+countryGoalCode+"=X&.tsrc=fin-srch"));
                     startActivity(urlintent);
                 } else {
-                    Toast.makeText(getContext(), "화폐를 모두 선택해 주세요", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getContext().getString(R.string.currencyAlert_tst), Toast.LENGTH_SHORT).show();
                 }
 
+            }
+        });
+
+        language_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final CharSequence[] items = {"한국어", "ENGLISH", "中文(繁體)"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("");
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case 0:
+                                LocaleHelper.setLocale(getContext(), languageKo);
+                                break;
+                            case 1:
+                                LocaleHelper.setLocale(getContext(), languageEn);
+                                break;
+                            case 2:
+                                LocaleHelper.setLocale(getContext(), languageTw);
+                                break;
+                        }
+                        dialog.dismiss();
+                        getActivity().recreate();
+                    }
+                }).create().show();
             }
         });
 
@@ -154,7 +191,7 @@ public class InputFragment extends Fragment {
                         @Override
                         public void onSuccess(Void aVoid) {
                             progressDialog.dismiss();
-                            Toast.makeText(getContext(), "저장되었습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), getContext().getString(R.string.save_tst), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -165,7 +202,7 @@ public class InputFragment extends Fragment {
                         }
                     });
         } catch (Exception e){
-            Toast.makeText(getContext(), "모두 입력해 주십시오!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getContext().getString(R.string.saveAlert_tst), Toast.LENGTH_SHORT).show();
         }
     }
 

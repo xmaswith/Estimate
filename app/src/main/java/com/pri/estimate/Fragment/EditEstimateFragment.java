@@ -41,7 +41,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.pri.estimate.AirActivity;
 import com.pri.estimate.BusActivity;
-import com.pri.estimate.DatabaseHelper;
 import com.pri.estimate.DriverActivity;
 import com.pri.estimate.FoodActivity;
 import com.pri.estimate.GuideActivity;
@@ -95,7 +94,6 @@ public class EditEstimateFragment extends Fragment {
     int totalPrice;
     double currencyRates = 0.0;
 
-    public DatabaseHelper db;
     private FirebaseUser firebaseUser;
     private DatabaseReference reference;
 
@@ -129,7 +127,6 @@ public class EditEstimateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_estimate, container, false);
-        db = new DatabaseHelper(getContext());
 
         dateOpenSwitch = view.findViewById(R.id.dateOpenSwitch);
         scrollView = view.findViewById(R.id.scrollView);
@@ -417,6 +414,11 @@ public class EditEstimateFragment extends Fragment {
                         driver_price_tv.setText(estimateModel.getDriverPrice());
                         total_tv.setText(estimateModel.getTotalPrice());
                         discount_et.setText(estimateModel.getDiscount());
+                        date_tv.setText(estimateModel.getDate());
+                        if(!date_tv.getText().equals("none")){
+                            dateOpenSwitch.isChecked();
+                            date_tv.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }
@@ -470,7 +472,7 @@ public class EditEstimateFragment extends Fragment {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Toast.makeText(getContext(), "저장되었습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), getContext().getString(R.string.save_tst), Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getContext(), MainActivity.class)
                             .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         }
@@ -481,7 +483,7 @@ public class EditEstimateFragment extends Fragment {
                 }
             });
         }catch (Exception e){
-            Toast.makeText(getContext(), "모두 입력해 주십시오!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getContext().getString(R.string.saveAlert_tst), Toast.LENGTH_SHORT).show();
         }
     }
 

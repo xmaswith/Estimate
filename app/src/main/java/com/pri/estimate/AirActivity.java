@@ -129,13 +129,12 @@ public class AirActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (addCount < 8){
-                    Toast.makeText(AirActivity.this, "add!", Toast.LENGTH_SHORT).show();
                     addCount++;
                     mInputModels.add(inputModel);
                     priceAdapter.notifyDataSetChanged();
                 }
                 else {
-                    Toast.makeText(AirActivity.this, "최대 8개까지만 입력 가능합니다!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AirActivity.this, AirActivity.this.getString(R.string.estimateLimit_tst), Toast.LENGTH_SHORT).show();
                 }
             }
         });

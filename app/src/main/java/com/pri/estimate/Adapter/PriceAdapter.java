@@ -126,7 +126,7 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolder>{
                 price = 0;
                 countPrice = Integer.parseInt(val2.toString());
                 textChanged.onChanged(R.id.result_tv, position, ""+price, ""+countPrice);
-                viewHolder.result_tv.setText("총액");
+                viewHolder.result_tv.setText(mContext.getString(R.string.total));
             }
         }
 

@@ -139,6 +139,11 @@ public class SavedEstimateFragment extends Fragment {
                         exchangeTotal_tv.setText(estimateModel.getExchangeTotalPrice());
                         symbol_tv.setText(estimateModel.getSymbol());
                         symbolGoal_tv.setText(estimateModel.getSymbolGoal());
+                        date_tv.setText(estimateModel.getDate());
+                        if(!date_tv.getText().equals("none")){
+                            dateOpenSwitch.isChecked();
+                            date_tv.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }

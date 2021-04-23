@@ -128,13 +128,12 @@ public class TicketActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (addCount < 8){
-                    Toast.makeText(TicketActivity.this, "add!", Toast.LENGTH_SHORT).show();
                     addCount++;
                     mInputModels.add(inputModel);
                     priceAdapter.notifyDataSetChanged();
                 }
                 else {
-                    Toast.makeText(TicketActivity.this, "최대 8개까지만 입력 가능합니다!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TicketActivity.this, TicketActivity.this.getString(R.string.estimateLimit_tst), Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -32,7 +32,7 @@
     <string name="chinese">中文(繁體)</string>
 
     <string name="foc_tip">FOC : 여행비 면제 인원수</string>
-    <string name="hotel_tip">호텔 수량 팁 : 총인원의 반 값으로 셋팅 추천</string>
+    <string name="hotel_tip">호텔 수량 팁 : 총인원의 반 값으로 셋팅</string>
     <string name="days_tip">여행 일수 팁 : 가이드 및 기사일비 수량에 적용</string>
     <string name="rate_tip">환율 : 직접 입력</string>
 
@@ -42,7 +42,6 @@
     <string name="currency_goal">변환화폐</string>
     <string name="currency_rate">환율</string>
     <string name="rate_realtime">실시간 환율 정보 보기</string>
-
 
     <string name="save_tst">저장되었습니다.</string>
     <string name="saveLimit_tst">최대 50개까지만 저장 가능합니다.</string>
