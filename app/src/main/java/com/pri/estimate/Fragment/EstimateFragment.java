@@ -271,20 +271,20 @@ public class EstimateFragment extends Fragment {
                 if(title_et.getParent()!=null){
                     ((ViewGroup)title_et.getParent()).removeView(title_et);
                 }
-                builder.setTitle("제목을 입력하십시오")
+                builder.setTitle(context.getString(R.string.save_dialog))
                         .setView(title_et)
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(context.getString(R.string.confirm_btn), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if(title_et.getText().toString().equals("")){
-                                    title = "sorry";
+                                    title = "no title";
                                 } else {
                                     title = title_et.getText().toString();
                                 }
                                 saveData(title);
                             }
                         })
-                        .setNeutralButton("취소", null)
+                        .setNeutralButton(context.getString(R.string.cancel_btn), null)
                         .create();
                 builder.show();
             }
@@ -294,15 +294,15 @@ public class EstimateFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setMessage("저장되지 않은 데이터는 삭제 됩니다.")
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                builder.setMessage(context.getString(R.string.new_dialog))
+                        .setPositiveButton(context.getString(R.string.confirm_btn), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ((FragmentActivity)getContext()).getSupportFragmentManager().beginTransaction()
                                         .detach(EstimateFragment.this).attach(EstimateFragment.this).commit();
                             }
                         })
-                        .setNeutralButton("취소", null)
+                        .setNeutralButton(context.getString(R.string.cancel_btn), null)
                         .create().show();
             }
         });

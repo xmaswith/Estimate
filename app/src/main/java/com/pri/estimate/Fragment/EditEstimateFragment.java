@@ -103,6 +103,14 @@ public class EditEstimateFragment extends Fragment {
 
     private DecimalFormat df;
 
+    Context context;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        this.context = context;
+        super.onAttach(context);
+    }
+
     public EditEstimateFragment() {
     }
 
@@ -260,15 +268,15 @@ public class EditEstimateFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("덮어 씌우겠습니까?")
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                builder.setTitle(context.getString(R.string.edit_dialog))
+                        .setPositiveButton(context.getString(R.string.confirm_btn), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 copyData(saveRef, tempRef);
                                 saveData();
                             }
                         })
-                        .setNeutralButton("취소", null)
+                        .setNeutralButton(context.getString(R.string.cancel_btn), null)
                         .create().show();
             }
         });

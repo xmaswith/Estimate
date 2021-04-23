@@ -183,7 +183,7 @@ public class InputFragment extends Fragment {
             hashMap.put("symbol", symbol_btn.getText().toString());
             hashMap.put("symbolGoal", symbolGoal_btn.getText().toString());
 
-            progressDialog.setMessage("저장중...");
+            progressDialog.setMessage("saving...");
             progressDialog.show();
 
             ref.updateChildren(hashMap)

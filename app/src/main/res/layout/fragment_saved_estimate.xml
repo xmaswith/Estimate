@@ -13,7 +13,7 @@
         android:padding="5dp"
         android:background="#8DCADD"
         android:textStyle="bold"
-        android:text="출발일 지정"/>
+        android:text="@string/departureDate"/>
 
     <TextView
         android:visibility="gone"
@@ -67,7 +67,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="15sp"
-                        android:text="인원"/>
+                        android:text="@string/person_et"/>
 
                     <EditText
                         android:id="@+id/person_et"
@@ -93,7 +93,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="15sp"
-                        android:text="FOC"/>
+                        android:text="@string/foc_et"/>
 
                     <EditText
                         android:id="@+id/foc_et"
@@ -119,7 +119,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="15sp"
-                        android:text="가이드"/>
+                        android:text="@string/guide_et"/>
 
                     <EditText
                         android:id="@+id/guide_et"
