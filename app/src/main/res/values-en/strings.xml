@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TravelEstimation</string>
+    <string name="app_name">Travel How Much?</string>
     <string name="est_title">Estimation</string>
     <string name="list_title">List</string>
     <string name="cal_title">Calendar</string>
