@@ -108,7 +108,7 @@ public class TicketActivity extends AppCompatActivity {
                 mTotal = grandTotal(results);
                 DecimalFormat myFormatter = new DecimalFormat("###,###");
                 String mTotalDecimal = myFormatter.format(mTotal);
-                total.setText("총액 : " + mTotalDecimal);
+                total.setText(TicketActivity.this.getString(R.string.total)+" : " + mTotalDecimal);
             }
         });
 

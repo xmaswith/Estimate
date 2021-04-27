@@ -1,5 +1,6 @@
 package com.pri.estimate;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,9 +24,16 @@ public class SplashActivity extends AppCompatActivity {
     FirebaseAuth auth;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.onAttach(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
 
         auth = FirebaseAuth.getInstance();
         auth.signInAnonymously().addOnCompleteListener(SplashActivity.this, new OnCompleteListener<AuthResult>() {
@@ -34,8 +42,7 @@ public class SplashActivity extends AppCompatActivity {
                 if (task.isSuccessful()){
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users")
                             .child(auth.getCurrentUser().getUid());
-
-                    reference.addValueEventListener(new ValueEventListener() {
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Handler handler = new Handler();
@@ -47,7 +54,7 @@ public class SplashActivity extends AppCompatActivity {
                                     startActivity(intent);
                                     finish();
                                 }
-                            }, 1000);
+                            }, 500);
                         }
 
                         @Override
@@ -61,4 +68,6 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

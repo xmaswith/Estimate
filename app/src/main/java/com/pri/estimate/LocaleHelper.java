@@ -7,18 +7,12 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.preference.PreferenceManager;
-
-import androidx.appcompat.app.AppCompatActivity;
+import android.util.Log;
 
 import java.util.Locale;
 
-public class LocaleHelper extends AppCompatActivity {
+public class LocaleHelper {
     private static final String SELECTED_LANGUAGE = "Locale.Helper.Selected.Language";
-
-//    @Override
-//    protected void attachBaseContext(Context newBase) {
-//        super.attachBaseContext(setLocale(newBase, getLanguage(newBase)));
-//    }
 
     public static Context onAttach(Context context) {
         String lang = getPersistedData(context, Locale.getDefault().getLanguage());
@@ -36,13 +30,12 @@ public class LocaleHelper extends AppCompatActivity {
 
     public static Context setLocale(Context context, String language) {
         persist(context, language);
-        Locale locale = new Locale(language);
-        Locale.setDefault(locale);
 
+        Log.e("lan :", language);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            return updateResources(context, locale);
+//            return updateResources(context, language);
 //        }
-        return updateResourcesLegacy(context, locale);
+        return updateResourcesLegacy(context, language);
     }
 
     private static String getPersistedData(Context context, String defaultLanguage) {
@@ -54,25 +47,40 @@ public class LocaleHelper extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
 
+
+        Log.e("lan save :", language);
+
         editor.putString(SELECTED_LANGUAGE, language);
         editor.apply();
     }
 
     @TargetApi(Build.VERSION_CODES.N)
-    private static Context updateResources(Context context, Locale locale) {
+    private static Context updateResources(Context context, String language) {
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+
         Configuration configuration = context.getResources().getConfiguration();
         configuration.setLocale(locale);
+        configuration.setLayoutDirection(locale);
 
         return context.createConfigurationContext(configuration);
     }
 
     @SuppressWarnings("deprecation")
-    private static Context updateResourcesLegacy(Context context, Locale locale) {
-//        Locale.setDefault(locale);
+    private static Context updateResourcesLegacy(Context context, String language) {
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
 
         Resources resources = context.getResources();
+
         Configuration configuration = resources.getConfiguration();
         configuration.locale = locale;
+//        configuration.setLocale(locale);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+
+            configuration.setLayoutDirection(locale);
+        }
 
         resources.updateConfiguration(configuration, resources.getDisplayMetrics());
 

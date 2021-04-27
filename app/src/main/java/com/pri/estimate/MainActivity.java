@@ -1,6 +1,7 @@
 package com.pri.estimate;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,15 +36,20 @@ public class MainActivity extends AppCompatActivity {
     public FirebaseAuth auth;
     public ProgressDialog dialog;
 
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        context = getApplicationContext();
+        auth = FirebaseAuth.getInstance();
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-        auth = FirebaseAuth.getInstance();
         dialog = new ProgressDialog(this);
         dialog.setTitle("Please wait");
         dialog.setCanceledOnTouchOutside(false);

@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.mynameismidori.currencypicker.CurrencyPicker;
 import com.mynameismidori.currencypicker.CurrencyPickerListener;
 import com.pri.estimate.LocaleHelper;
+import com.pri.estimate.MainActivity;
 import com.pri.estimate.Model.SaveModel;
 import com.pri.estimate.R;
 
@@ -51,6 +52,7 @@ public class InputFragment extends Fragment {
     private String languageKo = "ko";
     private String languageEn = "en";
     private String languageTw = "tw";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -152,7 +154,11 @@ public class InputFragment extends Fragment {
                                 break;
                         }
                         dialog.dismiss();
-                        getActivity().recreate();
+                        Intent intent = new Intent(getContext(), MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        getActivity().finish();
+                        startActivity(intent);
+
                     }
                 }).create().show();
             }
@@ -201,6 +207,7 @@ public class InputFragment extends Fragment {
                             Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
+
         } catch (Exception e){
             Toast.makeText(getContext(), getContext().getString(R.string.saveAlert_tst), Toast.LENGTH_SHORT).show();
         }

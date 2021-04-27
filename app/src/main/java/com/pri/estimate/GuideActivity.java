@@ -108,7 +108,7 @@ public class GuideActivity extends AppCompatActivity {
                 mTotal = grandTotal(results);
                 DecimalFormat myFormatter = new DecimalFormat("###,###");
                 String mTotalDecimal = myFormatter.format(mTotal);
-                total.setText("총액 : " + mTotalDecimal);
+                total.setText(GuideActivity.this.getString(R.string.total)+" : " + mTotalDecimal);
             }
         });
 

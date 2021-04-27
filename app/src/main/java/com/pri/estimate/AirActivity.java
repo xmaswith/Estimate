@@ -109,7 +109,7 @@ public class AirActivity extends AppCompatActivity {
                 mTotal = grandTotal(results);
                 DecimalFormat myFormatter = new DecimalFormat("###,###");
                 String mTotalDecimal = myFormatter.format(mTotal);
-                total.setText("총액 : " + mTotalDecimal);
+                total.setText(AirActivity.this.getString(R.string.total)+" : " + mTotalDecimal);
             }
         });
 
